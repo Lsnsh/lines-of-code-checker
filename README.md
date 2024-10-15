@@ -1,6 +1,6 @@
 # code-line-count-check
 
-Read this in other languages: English | [简体中文](./README-zh-CN,md)
+Read this in other languages: English | [简体中文](./README-zh-CN.md)
 
 `code-line-count-check` is a NodeJS command-line tool for checking files in a specified directory that exceed a specified number of lines, and outputting the results to the console or a log file.
 

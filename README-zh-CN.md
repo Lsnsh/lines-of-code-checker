@@ -1,6 +1,6 @@
 # code-line-count-check
 
-使用其他语言阅读：[English](./READNE.md) | 简体中文
+使用其他语言阅读：[English](./README.md) | 简体中文
 
 `code-line-count-check` 是一个 NodeJS 命令行工具，用于检查指定目录下超过指定行数的文件，并输出控制台日志或日志文件。
 
