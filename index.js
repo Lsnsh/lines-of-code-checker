@@ -153,3 +153,27 @@ const run = () => {
 };
 
 run();
+
+// // Configure command line options
+// program
+//   .option(
+//     "-d, --directory <path>",
+//     "Specify the directory to check",
+//     process.cwd()
+//   )
+//   .option("-l, --lines <number>", "Set the line threshold", 100)
+//   .option(
+//     "-o, --output <file>",
+//     "Output the log to a specified file",
+//     "./output.json"
+//   );
+
+// program.parse(process.argv);
+
+// const options = program.opts();
+// console.log(options);
+// checkDirectory(
+//   joinDirectoryPath(options.directory),
+//   parseInt(options.lines),
+//   options.output
+// );
