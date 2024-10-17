@@ -7,6 +7,29 @@
 
 Read this in other languages: English | [简体中文](./README-zh-CN.md)
 
+```bash
+➜  commander.js git:(master) locc -l 500
+Scanning... 9 files found
+Scan completed
+
+Exclude directories: .git,node_modules
+
+Files with more than 500 lines:
+
+File: /Users/lsnsh/github/commander.js/package-lock.json , Lines: 6490
+File: /Users/lsnsh/github/commander.js/lib/command.js , Lines: 2510
+File: /Users/lsnsh/github/commander.js/CHANGELOG.md , Lines: 1419
+File: /Users/lsnsh/github/commander.js/Readme.md , Lines: 1158
+File: /Users/lsnsh/github/commander.js/Readme_zh-CN.md , Lines: 1072
+File: /Users/lsnsh/github/commander.js/typings/index.d.ts , Lines: 970
+File: /Users/lsnsh/github/commander.js/typings/index.test-d.ts , Lines: 703
+File: /Users/lsnsh/github/commander.js/lib/help.js , Lines: 521
+File: /Users/lsnsh/github/commander.js/tests/command.positionalOptions.test.js , Lines: 521
+
+Total files: 9
+Check date: 2024-10-17T13:12:37.935Z
+```
+
 ## Features
 
 - Check the number of lines in files within a specified directory and its subdirectories
