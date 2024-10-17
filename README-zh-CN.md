@@ -28,9 +28,10 @@ clcc [options]
 
 ### 选项
 
-- `-d, --directory <path>` 指定要检查的目录 (默认当前目录)
+- `-d, --directory <paths>` 指定要检查的目录，用逗号分隔 (默认是当前目录)
 - `-l, --lines <number>` 设置行数阈值 (默认 200 行)
 - `-o, --output <path>` 输出日志文件到指定目录 (默认输出到控制台)
+- `-e, --exclude <paths>` 指定要排除的目录，用逗号分隔 (默认排除 .git 和 node_modules)
 
 ### 示例
 

@@ -21,6 +21,11 @@ program
   .option(
     "-o, --output <path>",
     "Output the log to a specified directory (default is output to the console)"
+  )
+  .option(
+    "-e --exclude <paths>",
+    "Specify the directories to exclude, separated by commas (default is .git and node_modules)",
+    ".git,node_modules"
   );
 
 program.addHelpText(
@@ -41,6 +46,7 @@ const options = program.opts();
 const maxLines = options.lines;
 const directoryArg = options.directory;
 const outputDir = options.output;
+const excludeDirs = options.exclude.split(",");
 const checkDirs = [...directoryArg.split(",")];
 
 run(checkDirs);
@@ -52,9 +58,23 @@ function joinDirectoryPath(subPath) {
   return path.join(process.cwd(), subPath);
 }
 
+// 匹配排除的目录
+function matchExcludeDirectory(directoryPath) {
+  const excludeDirectoryPaths = excludeDirs.map((dir) =>
+    joinDirectoryPath(dir)
+  );
+
+  return excludeDirectoryPaths.includes(directoryPath);
+}
+
 // 递归遍历目录
 function checkDirectory(directoryPath) {
-  // console.log(`Scanning directory: ${directoryPath}`);
+  // 排除指定目录
+  if (matchExcludeDirectory(directoryPath)) {
+    return;
+  }
+
+  console.log(`Scanning directory: ${directoryPath}`);
 
   // 读取目录内容
   fs.readdir(directoryPath, (err, files) => {
@@ -125,9 +145,10 @@ function regularCheck(duration) {
 
     // 如果 outputCount 前后两次相等，说明遍历完成
     if (checkCount >= 2) {
-      console.log("Scan completed" + "\n");
+      console.log("Scan completed");
 
       if (outputDir === undefined) {
+        console.log("\nExclude directories: " + excludeDirs + "\n");
         console.log("Files with more than " + maxLines + " lines:" + "\n");
         // 输出文件名和行数
         outputInfos
@@ -152,6 +173,10 @@ function regularCheck(duration) {
         logFile = logFile.replace(/ /g, "_").replace(/\//g, "_");
         const logPath = joinDirectoryPath(`${outputDir}/${logFile}`);
         fs.writeFileSync(
+          logPath,
+          "Exclude directories: " + excludeDirs + "\n\n"
+        );
+        fs.appendFileSync(
           logPath,
           "Files with more than " + maxLines + " lines:\n" + "\n"
         );

@@ -28,9 +28,10 @@ clcc [options]
 
 ### Options
 
-- `-d, --directory <path>` Specify the directory to check (default is the current directory)
+- `-d, --directory <paths>` Specify the directories to check, separated by commas (default is the current directory)
 - `-l, --lines <number>` Set the line threshold (default is 200 lines)
 - `-o, --output <path>` Output the log to a specified directory (default is output to the console)
+- `-e --exclude <paths>` Specify the directories to exclude, separated by commas (default is .git and node_modules)
 
 ### Examples
 
