@@ -29,12 +29,12 @@ clcc [options]
 ### Options
 
 - `-d, --directory <path>` Specify the directory to check (default is the current directory)
-- `-l, --lines <number>` Set the line threshold (default is 100 lines)
+- `-l, --lines <number>` Set the line threshold (default is 200 lines)
 - `-o, --output <path>` Output the log to a specified directory (default is output to the console)
 
 ### Examples
 
-Check files in the current directory that exceed the default threshold of 100 lines and output the results to the console:
+Check files in the current directory that exceed the default threshold of 200 lines and output the results to the console:
 
 ```bash
 clcc

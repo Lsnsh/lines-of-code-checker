@@ -10,8 +10,8 @@ program
   .usage("[options] <directory> [output]")
   .option(
     "-l, --lines <number>",
-    "Set the line threshold (default is 100 lines)",
-    100
+    "Set the line threshold (default is 200 lines)",
+    200
   )
   .option(
     "-d, --directory <paths>",
