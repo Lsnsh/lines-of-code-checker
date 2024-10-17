@@ -4,10 +4,16 @@
   "description": "Command-line tool to check files that exceed the specified number of lines of code",
   "keywords": [
     "locc",
+    "lines of code checker",
     "lines of code check",
-    "count lines of code",
+    "check lines of code",
+    "loc",
     "lines of code",
-    "loc"
+    "count lines of code",
+    "代码行数检查器",
+    "代码行数检查",
+    "检查代码行数",
+    "代码行数"
   ],
   "license": "MIT",
   "author": "Lsnsh Xin <lsnzshe@gmail.com>",
