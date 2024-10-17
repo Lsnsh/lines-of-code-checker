@@ -1,8 +1,8 @@
 # code-line-count-check
 
-Read this in other languages: English | [简体中文](./README-zh-CN.md)
-
 `code-line-count-check` is a NodeJS command-line tool for checking files in a specified directory that exceed a specified number of lines, and outputting the results to the console or a log file.
+
+Read this in other languages: English | [简体中文](./README-zh-CN.md)
 
 ## Features
 
@@ -30,7 +30,7 @@ clcc [options]
 
 - `-d, --directory <path>` Specify the directory to check (default is the current directory)
 - `-l, --lines <number>` Set the line threshold (default is 100 lines)
-- `-o, --output <file>` Output the log to a specified file (default is output to the console)
+- `-o, --output <path>` Output the log to a specified directory (default is output to the console)
 
 ### Examples
 
@@ -40,10 +40,10 @@ Check files in the current directory that exceed 200 lines and output the result
 clcc -l 200
 ```
 
-Check files in the `/path/to/dir` directory that exceed 50 lines and output the results to the `output.log` file:
+Check files in the `/path/to/dir` directory that exceed 50 lines and output the results to the `logs` directory:
 
 ```bash
-clcc -d /path/to/dir -l 50 -o output.log
+clcc -d /path/to/dir -l 50 -o logs
 ```
 
 ## Contributing

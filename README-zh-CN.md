@@ -1,8 +1,8 @@
 # code-line-count-check
 
-使用其他语言阅读：[English](./README.md) | 简体中文
-
 `code-line-count-check` 是一个 NodeJS 命令行工具，用于检查指定目录下超过指定行数的文件，并输出控制台日志或日志文件。
+
+使用其他语言阅读：[English](./README.md) | 简体中文
 
 ## 特性
 
@@ -30,7 +30,7 @@ clcc [options]
 
 - `-d, --directory <path>` 指定要检查的目录 (默认当前目录)
 - `-l, --lines <number>` 设置行数阈值 (默认 100 行)
-- `-o, --output <file>` 输出日志到指定文件 (默认输出到控制台)
+- `-o, --output <path>` 输出日志文件到指定目录 (默认输出到控制台)
 
 ### 示例
 
@@ -40,10 +40,10 @@ clcc [options]
 clcc -l 200
 ```
 
-检查 `/path/to/dir` 目录下超过 50 行的文件，并将结果输出到 `output.log` 文件：
+检查 `/path/to/dir` 目录下超过 50 行的文件，并将结果输出到 `logs` 目录：
 
 ```bash
-clcc -d /path/to/dir -l 50 -o output.log
+clcc -d /path/to/dir -l 50 -o logs
 ```
 
 ## 贡献
