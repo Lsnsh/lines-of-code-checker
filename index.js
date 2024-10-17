@@ -74,7 +74,7 @@ function checkDirectory(directoryPath) {
     return;
   }
 
-  console.log(`Scanning directory: ${directoryPath}`);
+  // console.log(`Scanning directory: ${directoryPath}`);
 
   // 读取目录内容
   fs.readdir(directoryPath, (err, files) => {
