@@ -1,17 +1,22 @@
 {
   "name": "code-line-count-check",
   "version": "1.0.0",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
+  "description": "Command-line tool to check files that exceed the specified number of lines of code",
+  "keywords": [
+    "clcc",
+    "code line count check",
+    "count lines of code",
+    "lines of code",
+    "loc"
+  ],
+  "license": "MIT",
+  "author": "Lsnsh Xin <lsnzshe@gmail.com>",
   "bin": {
     "clcc": "index.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
   "dependencies": {
     "commander": "^12.1.0"
   }
