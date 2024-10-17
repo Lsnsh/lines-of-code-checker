@@ -34,21 +34,35 @@ clcc [options]
 
 ### 示例
 
-检查当前目录下超过 200 行的文件，并将结果输出到控制台：
+检查当前目录中超过默认阈值 100 行的文件，并将结果输出到控制台：
+
+```bash
+clcc
+```
+
+检查当前目录中超过 200 行的文件，并将结果输出到控制台：
 
 ```bash
 clcc -l 200
 ```
 
-检查 `/path/to/dir` 目录下超过 50 行的文件，并将结果输出到 `logs` 目录：
+检查 `path/to/directory` 目录中超过 200 行的文件，并将结果输出到控制台：
 
 ```bash
-clcc -d /path/to/dir -l 50 -o logs
+clcc -l 200 -d path/to/directory
 ```
 
-## 贡献
+检查 `path/to/directory` 目录中超过 200 行的文件，并将结果输出到 `path/to/output` 目录：
 
-欢迎提交问题和拉取请求来帮助改进此项目。请确保在提交前阅读 [贡献指南](CONTRIBUTING.md)。
+```bash
+clcc -l 200 -d path/to/directory -o path/to/output
+```
+
+检查多个目录（`path/to/directory1` 和 `path/to/directory2`）中超过 200 行的文件，并将结果输出到 `path/to/output` 目录：
+
+```bash
+clcc -l 200 -d path/to/directory1,path/to/directory2 -o path/to/output
+```
 
 ## 问题？
 

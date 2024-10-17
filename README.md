@@ -34,21 +34,35 @@ clcc [options]
 
 ### Examples
 
+Check files in the current directory that exceed the default threshold of 100 lines and output the results to the console:
+
+```bash
+clcc
+```
+
 Check files in the current directory that exceed 200 lines and output the results to the console:
 
 ```bash
 clcc -l 200
 ```
 
-Check files in the `/path/to/dir` directory that exceed 50 lines and output the results to the `logs` directory:
+Check files in the `path/to/directory` directory that exceed 200 lines and output the results to the console:
 
 ```bash
-clcc -d /path/to/dir -l 50 -o logs
+clcc -l 200 -d path/to/directory
 ```
 
-## Contributing
+Check files in the `path/to/directory` directory that exceed 200 lines and output the results to the `path/to/output` directory:
 
-Feel free to submit issues and pull requests to help improve this project. Please make sure to read the [contributing guidelines](CONTRIBUTING.md) before submitting.
+```bash
+clcc -l 200 -d path/to/directory -o path/to/output
+```
+
+Check files in multiple directories (`path/to/directory1` and `path/to/directory2`) that exceed 200 lines and output the results to the `path/to/output` directory:
+
+```bash
+clcc -l 200 -d path/to/directory1,path/to/directory2 -o path/to/output
+```
 
 ## Questions?
 
