@@ -1,5 +1,8 @@
 # lines-of-code-checker
 
+[![NPM Version](https://img.shields.io/npm/v/lines-of-code-checker)](https://www.npmjs.com/package/lines-of-code-checker)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/lsnsh/lines-of-code-checker/tests.yml?branch=main&label=tests&logo=github)](https://github.com/lsnsh/lines-of-code-checker/actions?query=workflow%3ATests+branch%3Amain)
+
 `lines-of-code-checker` is a NodeJS command-line tool for checking files in a specified directory that exceed a specified number of lines, and outputting the results to the console or a log file.
 
 Read this in other languages: English | [简体中文](./README-zh-CN.md)
