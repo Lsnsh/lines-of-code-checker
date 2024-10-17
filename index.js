@@ -2,40 +2,58 @@
 
 const fs = require("fs");
 const path = require("path");
-// const { program } = require("commander");
+const { program } = require("commander");
 
-// 获取命令行参数
-const args = process.argv.slice(2);
+program
+  .version(require("./package.json").version)
+  .description("Check files in a directory for exceeding a line threshold")
+  .usage("[options] <directory> [output]")
+  .option(
+    "-l, --lines <number>",
+    "Set the line threshold (default is 100 lines)",
+    100
+  )
+  .option(
+    "-d, --directory <paths>",
+    "Specify the directories to check, separated by commas (default is the current directory)",
+    "./"
+  )
+  .option(
+    "-o, --output <path>",
+    "Output the log to a specified directory (default is output to the console)"
+  );
 
-// 获取目录参数，支持多个目录，用逗号分隔
-const directoryArg = args[0] || "./"; // 如果没有提供参数，默认使用 './'
-const outputDir = args[1] || "./"; // 如果没有提供参数，默认使用 './'
+program.addHelpText(
+  "after",
+  [
+    "\nExample call:",
+    "  $ clcc",
+    "  $ clcc -l 200",
+    "  $ clcc -l 200 -d path/to/directory",
+    "  $ clcc -l 200 -d path/to/directory -o path/to/output",
+    "  $ clcc -l 200 -d path/to/directory1,path/to/directory2 -o path/to/output",
+  ].join("\n")
+);
 
-// TODO: 使用 commander 库解析命令行参数
-// 参考：https://github.com/tj/commander.js/blob/master/Readme_zh-CN.md
-// - `-d, --directory <path>` Specify the directory to check (default is the current directory)
-// - `-l, --lines <number>` Set the line threshold (default is 100 lines)
-// - `-o, --output <file>` Output the log to a specified file (default is output to the console)
+program.parse(process.argv);
 
-// program.option("-d, --directory <path>", "Specify the directory to check");
-// program.option("-o, --output <path>", "Output the log to a specified file");
-// program.option("-l, --lines <number>", "Set the line threshold");
-
-const maxLines = 200; // 最大行数
-const output = [];
-const duration = 50;
-let outputCount = 0;
-let checkCount = 0;
+const options = program.opts();
+const maxLines = options.lines;
+const directoryArg = options.directory;
+const outputDir = options.output;
 const checkDirs = [...directoryArg.split(",")];
 
-const logDir = outputDir;
-const dateStr = new Date().toISOString();
+run(checkDirs);
+
+const outputInfos = [];
 
 // 拼接目录路径
-const joinDirectoryPath = (subPath) => path.join(process.cwd(), subPath);
+function joinDirectoryPath(subPath) {
+  return path.join(process.cwd(), subPath);
+}
 
 // 递归遍历目录
-const checkDirectory = (directoryPath) => {
+function checkDirectory(directoryPath) {
   // console.log(`Scanning directory: ${directoryPath}`);
 
   // 读取目录内容
@@ -68,7 +86,7 @@ const checkDirectory = (directoryPath) => {
             // 如果行数大于 maxLines 行，输出文件名和路径
             if (lines > maxLines) {
               // console.log(`File: ${filePath}, Lines: ${lines}`);
-              output.push({
+              outputInfos.push({
                 file: filePath,
                 lines: lines,
               });
@@ -83,97 +101,86 @@ const checkDirectory = (directoryPath) => {
       });
     });
   });
-};
+}
 
-const regularCheck = () => {
+// 定时检查是否遍历完成
+function regularCheck(duration) {
+  let outputCount = 0;
+  let checkCount = 0;
+  const dateStr = new Date().toISOString();
+
   // 每隔 duration 毫秒检查一次是否遍历完成
   setInterval(() => {
-    // console.log('outputCount:', outputCount, 'output.length:', output.length);
+    // console.log('outputCount:', outputCount, 'outputInfos.length:', outputInfos.length);
 
     // 如果 outputCount 有变化，说明还在遍历
-    if (outputCount !== output.length) {
+    if (outputCount !== outputInfos.length) {
       checkCount = 0;
-      outputCount = output.length;
+      outputCount = outputInfos.length;
       console.log("Scanning... " + outputCount + " files found");
     } else {
       checkCount++;
-      console.log("Checking... " + checkCount + " times");
+      // console.log("Checking... " + checkCount + " times");
     }
 
     // 如果 outputCount 前后两次相等，说明遍历完成
     if (checkCount >= 2) {
-      console.log("\n" + "Scan completed");
-      console.log("Files with more than " + maxLines + " lines:" + "\n");
-      // 输出文件名和行数
-      output
-        .sort((a, b) => b.lines - a.lines)
-        .forEach((item) => {
-          console.log(`File: ${item.file} , Lines: ${item.lines}`);
-        });
-      // 输出文件总数
-      console.log("\n" + "Total files: " + output.length);
-      // 输出检查日期
-      console.log("Check date: " + dateStr);
+      console.log("Scan completed" + "\n");
+
+      if (outputDir === undefined) {
+        console.log("Files with more than " + maxLines + " lines:" + "\n");
+        // 输出文件名和行数
+        outputInfos
+          .sort((a, b) => b.lines - a.lines)
+          .forEach((item) => {
+            console.log(`File: ${item.file} , Lines: ${item.lines}`);
+          });
+        // 输出文件总数
+        console.log("\n" + "Total files: " + outputInfos.length);
+        // 输出检查日期
+        console.log("Check date: " + dateStr);
+      }
 
       // --------------------------
       // 同时将日志输出到文件
 
       // 转义文件名中的空格和斜杠
-      let logFile = `${dateStr
-        .replaceAll("-", "_")
-        .slice(0, 19)}-${maxLines}_line_check-${checkDirs}.log`;
-      logFile = logFile.replace(/ /g, "_").replace(/\//g, "_");
-      const logPath = joinDirectoryPath(`${logDir}/${logFile}`);
-      fs.writeFileSync(
-        logPath,
-        "Files with more than " + maxLines + " lines:\n" + "\n"
-      );
-      output.forEach((item) => {
+      if (outputDir !== undefined) {
+        let logFile = `${dateStr
+          .replaceAll("-", "_")
+          .slice(0, 19)}-${maxLines}_line_check-${checkDirs}.log`;
+        logFile = logFile.replace(/ /g, "_").replace(/\//g, "_");
+        const logPath = joinDirectoryPath(`${outputDir}/${logFile}`);
+        fs.writeFileSync(
+          logPath,
+          "Files with more than " + maxLines + " lines:\n" + "\n"
+        );
+        outputInfos.forEach((item) => {
+          fs.appendFileSync(
+            logPath,
+            `File: ${item.file} , Lines: ${item.lines}\n`
+          );
+        });
         fs.appendFileSync(
           logPath,
-          `File: ${item.file} , Lines: ${item.lines}\n`
+          "\n" + "Total files: " + outputInfos.length + "\n"
         );
-      });
-      fs.appendFileSync(logPath, "\n" + "Total files: " + output.length + "\n");
-      fs.appendFileSync(logPath, "Check date: " + dateStr + "\n");
+        fs.appendFileSync(logPath, "Check date: " + dateStr + "\n");
+      }
 
       // 退出进程
       process.exit();
     }
   }, duration);
-};
+}
 
-const run = () => {
+function run(dirs = []) {
   // 指定要遍历的目录
-  checkDirs.forEach((checkDir) => {
+  dirs.forEach((checkDir) => {
     checkDirectory(joinDirectoryPath(checkDir));
   });
 
-  regularCheck();
-};
-
-run();
-
-// // Configure command line options
-// program
-//   .option(
-//     "-d, --directory <path>",
-//     "Specify the directory to check",
-//     process.cwd()
-//   )
-//   .option("-l, --lines <number>", "Set the line threshold", 100)
-//   .option(
-//     "-o, --output <file>",
-//     "Output the log to a specified file",
-//     "./output.json"
-//   );
-
-// program.parse(process.argv);
-
-// const options = program.opts();
-// console.log(options);
-// checkDirectory(
-//   joinDirectoryPath(options.directory),
-//   parseInt(options.lines),
-//   options.output
-// );
+  // 定时检查是否遍历完成
+  const duration = 50;
+  regularCheck(duration);
+}
