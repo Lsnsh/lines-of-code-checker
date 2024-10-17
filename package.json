@@ -17,6 +17,10 @@
   ],
   "license": "MIT",
   "author": "Lsnsh Xin <lsnzshe@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Lsnsh/lines-of-code-checker.git"
+  },
   "bin": {
     "locc": "index.js"
   },
