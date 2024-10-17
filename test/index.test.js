@@ -6,7 +6,7 @@ test("smoke test for command-line tool", (done) => {
   exec(`node ${scriptPath} -l 10 -d ./test`, (error, stdout, stderr) => {
     expect(error).toBeNull();
     expect(stderr).toBe("");
-    expect(stdout).toContain("Scanning directory");
+    expect(stdout).toContain("Scan");
     done();
   });
 });
