@@ -1,6 +1,6 @@
-# code-line-count-check
+# lines-of-code-checker
 
-`code-line-count-check` is a NodeJS command-line tool for checking files in a specified directory that exceed a specified number of lines, and outputting the results to the console or a log file.
+`lines-of-code-checker` is a NodeJS command-line tool for checking files in a specified directory that exceed a specified number of lines, and outputting the results to the console or a log file.
 
 Read this in other languages: English | [简体中文](./README-zh-CN.md)
 
@@ -15,7 +15,7 @@ Read this in other languages: English | [简体中文](./README-zh-CN.md)
 Install using npm:
 
 ```bash
-npm install -g code-line-count-check
+npm install -g lines-of-code-checker
 ```
 
 ## Usage
@@ -23,7 +23,7 @@ npm install -g code-line-count-check
 ### Command Line Options
 
 ```bash
-clcc [options]
+locc [options]
 ```
 
 ### Options
@@ -38,31 +38,31 @@ clcc [options]
 Check files in the current directory that exceed the default threshold of 200 lines and output the results to the console:
 
 ```bash
-clcc
+locc
 ```
 
 Check files in the current directory that exceed 200 lines and output the results to the console:
 
 ```bash
-clcc -l 200
+locc -l 200
 ```
 
 Check files in the `path/to/directory` directory that exceed 200 lines and output the results to the console:
 
 ```bash
-clcc -l 200 -d path/to/directory
+locc -l 200 -d path/to/directory
 ```
 
 Check files in the `path/to/directory` directory that exceed 200 lines and output the results to the `path/to/output` directory:
 
 ```bash
-clcc -l 200 -d path/to/directory -o path/to/output
+locc -l 200 -d path/to/directory -o path/to/output
 ```
 
 Check files in multiple directories (`path/to/directory1` and `path/to/directory2`) that exceed 200 lines and output the results to the `path/to/output` directory:
 
 ```bash
-clcc -l 200 -d path/to/directory1,path/to/directory2 -o path/to/output
+locc -l 200 -d path/to/directory1,path/to/directory2 -o path/to/output
 ```
 
 ## Questions?

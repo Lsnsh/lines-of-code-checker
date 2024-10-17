@@ -32,11 +32,11 @@ program.addHelpText(
   "after",
   [
     "\nExample call:",
-    "  $ clcc",
-    "  $ clcc -l 200",
-    "  $ clcc -l 200 -d path/to/directory",
-    "  $ clcc -l 200 -d path/to/directory -o path/to/output",
-    "  $ clcc -l 200 -d path/to/directory1,path/to/directory2 -o path/to/output",
+    "  $ locc",
+    "  $ locc -l 200",
+    "  $ locc -l 200 -d path/to/directory",
+    "  $ locc -l 200 -d path/to/directory -o path/to/output",
+    "  $ locc -l 200 -d path/to/directory1,path/to/directory2 -o path/to/output",
   ].join("\n")
 );
 

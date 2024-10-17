@@ -1,6 +1,6 @@
-# code-line-count-check
+# lines-of-code-checker
 
-`code-line-count-check` 是一个 NodeJS 命令行工具，用于检查指定目录下超过指定行数的文件，并输出控制台日志或日志文件。
+`lines-of-code-checker` 是一个 NodeJS 命令行工具，用于检查指定目录下超过指定行数的文件，并输出控制台日志或日志文件。
 
 使用其他语言阅读：[English](./README.md) | 简体中文
 
@@ -15,7 +15,7 @@
 使用 npm 安装：
 
 ```bash
-npm install -g code-line-count-check
+npm install -g lines-of-code-checker
 ```
 
 ## 使用方法
@@ -23,7 +23,7 @@ npm install -g code-line-count-check
 ### 命令行选项
 
 ```bash
-clcc [options]
+locc [options]
 ```
 
 ### 选项
@@ -38,31 +38,31 @@ clcc [options]
 检查当前目录中超过默认阈值 200 行的文件，并将结果输出到控制台：
 
 ```bash
-clcc
+locc
 ```
 
 检查当前目录中超过 200 行的文件，并将结果输出到控制台：
 
 ```bash
-clcc -l 200
+locc -l 200
 ```
 
 检查 `path/to/directory` 目录中超过 200 行的文件，并将结果输出到控制台：
 
 ```bash
-clcc -l 200 -d path/to/directory
+locc -l 200 -d path/to/directory
 ```
 
 检查 `path/to/directory` 目录中超过 200 行的文件，并将结果输出到 `path/to/output` 目录：
 
 ```bash
-clcc -l 200 -d path/to/directory -o path/to/output
+locc -l 200 -d path/to/directory -o path/to/output
 ```
 
 检查多个目录（`path/to/directory1` 和 `path/to/directory2`）中超过 200 行的文件，并将结果输出到 `path/to/output` 目录：
 
 ```bash
-clcc -l 200 -d path/to/directory1,path/to/directory2 -o path/to/output
+locc -l 200 -d path/to/directory1,path/to/directory2 -o path/to/output
 ```
 
 ## 问题？
