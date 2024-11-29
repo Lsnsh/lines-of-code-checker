@@ -3,9 +3,10 @@
 const fs = require("fs");
 const path = require("path");
 const { program } = require("commander");
+const pkg = require("../package.json");
 
 program
-  .version(require("./package.json").version)
+  .version(pkg.version)
   .description("Check files in a directory for exceeding a line threshold")
   .usage("[options] <directory> [output]")
   .option(
