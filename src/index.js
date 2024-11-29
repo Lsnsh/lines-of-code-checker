@@ -1,77 +1,14 @@
-#!/usr/bin/env node
-
 const fs = require("fs");
 const path = require("path");
-const { program } = require("commander");
-const pkg = require("../package.json");
-
-program
-  .version(pkg.version)
-  .description("Check files in a directory for exceeding a line threshold")
-  .usage("[options] <directory> [output]")
-  .option(
-    "-l, --lines <number>",
-    "Set the line threshold (default is 200 lines)",
-    200
-  )
-  .option(
-    "-d, --directory <paths>",
-    "Specify the directories to check, separated by commas (default is the current directory)",
-    "./"
-  )
-  .option(
-    "-o, --output <path>",
-    "Output the log to a specified directory (default is output to the console)"
-  )
-  .option(
-    "-e --exclude <paths>",
-    "Specify the directories to exclude, separated by commas (default is .git and node_modules)",
-    ".git,node_modules"
-  );
-
-program.addHelpText(
-  "after",
-  [
-    "\nExample call:",
-    "  $ locc",
-    "  $ locc -l 200",
-    "  $ locc -l 200 -d path/to/directory",
-    "  $ locc -l 200 -d path/to/directory -o path/to/output",
-    "  $ locc -l 200 -d path/to/directory1,path/to/directory2 -o path/to/output",
-  ].join("\n")
-);
-
-program.parse(process.argv);
-
-const options = program.opts();
-const maxLines = options.lines;
-const directoryArg = options.directory;
-const outputDir = options.output;
-const excludeDirs = options.exclude.split(",");
-const checkDirs = [...directoryArg.split(",")];
-
-run(checkDirs);
+const { joinDirectoryPath, matchExcludeDirectory } = require("./lib/utils");
 
 const outputInfos = [];
 
-// 拼接目录路径
-function joinDirectoryPath(subPath) {
-  return path.join(process.cwd(), subPath);
-}
-
-// 匹配排除的目录
-function matchExcludeDirectory(directoryPath) {
-  const excludeDirectoryPaths = excludeDirs.map((dir) =>
-    joinDirectoryPath(dir)
-  );
-
-  return excludeDirectoryPaths.includes(directoryPath);
-}
-
 // 递归遍历目录
-function checkDirectory(directoryPath) {
+function checkDirectory(directoryPath, formatOptions) {
+  const { excludeDirs, maxLines } = formatOptions;
   // 排除指定目录
-  if (matchExcludeDirectory(directoryPath)) {
+  if (matchExcludeDirectory(directoryPath, excludeDirs)) {
     return;
   }
 
@@ -116,7 +53,7 @@ function checkDirectory(directoryPath) {
         } else {
           // 如果是目录，递归调用 checkDirectory
           if (stats.isDirectory()) {
-            checkDirectory(filePath);
+            checkDirectory(filePath, formatOptions);
           }
         }
       });
@@ -125,7 +62,8 @@ function checkDirectory(directoryPath) {
 }
 
 // 定时检查是否遍历完成
-function regularCheck(duration) {
+function regularCheck(duration, formatOptions) {
+  const { maxLines, outputDir, excludeDirs, checkDirs } = formatOptions;
   let outputCount = 0;
   let checkCount = 0;
   const dateStr = new Date().toISOString();
@@ -200,13 +138,30 @@ function regularCheck(duration) {
   }, duration);
 }
 
-function run(dirs = []) {
+function run(formatOptions) {
+  const { checkDirs } = formatOptions;
+
   // 指定要遍历的目录
-  dirs.forEach((checkDir) => {
-    checkDirectory(joinDirectoryPath(checkDir));
+  checkDirs.forEach((checkDir) => {
+    checkDirectory(joinDirectoryPath(checkDir), formatOptions);
   });
 
   // 定时检查是否遍历完成
   const duration = 50;
-  regularCheck(duration);
+  regularCheck(duration, formatOptions);
 }
+
+function locc(options) {
+  console.log("receive options", options);
+
+  const formatOptions = {
+    maxLines: options.lines,
+    checkDirs: options.directory.split(","),
+    outputDir: options.output,
+    excludeDirs: options.exclude.split(","),
+  };
+
+  run(formatOptions);
+}
+
+module.exports = { locc };
