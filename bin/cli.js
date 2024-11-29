@@ -42,6 +42,8 @@ program.addHelpText(
 
 program.parse(process.argv);
 
-const options = program.opts();
+(async function () {
+  const options = program.opts();
 
-locc(options);
+  await locc(options);
+})();

@@ -2,23 +2,48 @@ const fs = require("fs");
 const path = require("path");
 const { joinDirectoryPath, matchExcludeDirectory } = require("./lib/utils");
 
+const fileList = [];
+const taskList = [];
 const outputInfos = [];
+
+// 创建读取文件的任务
+function createReadFileTask(filePath, maxLines) {
+  return new Promise((resolve, reject) => {
+    // 读取文件内容
+    fs.readFile(filePath, "utf8", (err, data) => {
+      if (err) {
+        reject(err);
+        return console.error("Unable to read file: " + err);
+      }
+      // 计算文件行数
+      const lines = data.split("\n").length;
+      // 如果行数大于 maxLines 行，输出文件名和路径
+      if (lines > maxLines) {
+        // console.log(`File: ${filePath}, Lines: ${lines}`);
+        resolve({
+          file: filePath,
+          lines: lines,
+        });
+      } else {
+        resolve(null);
+      }
+    });
+  });
+}
 
 // 递归遍历目录
 function checkDirectory(directoryPath, formatOptions) {
-  const { excludeDirs, maxLines } = formatOptions;
-  // 排除指定目录
-  if (matchExcludeDirectory(directoryPath, excludeDirs)) {
-    return;
-  }
-
-  // console.log(`Scanning directory: ${directoryPath}`);
-
-  // 读取目录内容
-  fs.readdir(directoryPath, (err, files) => {
-    if (err) {
-      return console.error("Unable to scan directory: " + err);
+  try {
+    const { maxLines, excludeDirs } = formatOptions;
+    // 排除指定目录
+    if (matchExcludeDirectory(directoryPath, excludeDirs)) {
+      return;
     }
+
+    // console.log(`Scanning directory: ${directoryPath}`);
+
+    // 读取目录内容
+    const files = fs.readdirSync(directoryPath);
 
     // 遍历目录中的每个文件
     files.forEach((file) => {
@@ -26,39 +51,22 @@ function checkDirectory(directoryPath, formatOptions) {
       const filePath = path.join(directoryPath, file);
 
       // 检查是否为文件
-      fs.stat(filePath, (err, stats) => {
-        if (err) {
-          return console.error("Unable to read file stats: " + err);
+      const stats = fs.statSync(filePath);
+
+      if (stats.isFile()) {
+        fileList.push(filePath);
+        // 如果是文件，创建读取文件的任务
+        taskList.push(createReadFileTask(filePath, maxLines));
+      } else {
+        // 如果是目录，递归调用 checkDirectory
+        if (stats.isDirectory()) {
+          checkDirectory(filePath, formatOptions);
         }
-
-        if (stats.isFile()) {
-          // 读取文件内容
-          fs.readFile(filePath, "utf8", (err, data) => {
-            if (err) {
-              return console.error("Unable to read file: " + err);
-            }
-
-            // 计算文件行数
-            const lines = data.split("\n").length;
-
-            // 如果行数大于 maxLines 行，输出文件名和路径
-            if (lines > maxLines) {
-              // console.log(`File: ${filePath}, Lines: ${lines}`);
-              outputInfos.push({
-                file: filePath,
-                lines: lines,
-              });
-            }
-          });
-        } else {
-          // 如果是目录，递归调用 checkDirectory
-          if (stats.isDirectory()) {
-            checkDirectory(filePath, formatOptions);
-          }
-        }
-      });
+      }
     });
-  });
+  } catch (err) {
+    console.error("Unable to scan directory: " + err);
+  }
 }
 
 const printLogToConsole = (outputInfos, formatOptions) => {
@@ -104,58 +112,54 @@ const writeLogToFile = (outputInfos, formatOptions) => {
   fs.appendFileSync(logPath, "Check date: " + dateStr + "\n");
 };
 
-// 定时检查是否遍历完成
-function regularCheck(duration, formatOptions) {
+const handleOutputInfos = (outputInfos, formatOptions) => {
   const { outputDir } = formatOptions;
-  let outputCount = 0;
-  let checkCount = 0;
 
-  // 每隔 duration 毫秒检查一次是否遍历完成
-  setInterval(() => {
-    // console.log('outputCount:', outputCount, 'outputInfos.length:', outputInfos.length);
+  if (outputDir === undefined) {
+    printLogToConsole(outputInfos, formatOptions);
+  }
+  // --------------------------
+  // 同时将日志输出到文件
+  if (outputDir !== undefined) {
+    writeLogToFile(outputInfos, formatOptions);
+  }
+};
 
-    // 如果 outputCount 有变化，说明还在遍历
-    if (outputCount !== outputInfos.length) {
-      checkCount = 0;
-      outputCount = outputInfos.length;
-      console.log("Scanning... " + outputCount + " files found");
-    } else {
-      checkCount++;
-      // console.log("Checking... " + checkCount + " times");
-    }
-
-    // 如果 outputCount 前后两次相等，说明遍历完成
-    if (checkCount >= 2) {
-      console.log("Scan completed");
-      if (outputDir === undefined) {
-        printLogToConsole(outputInfos, formatOptions);
-      }
-      // --------------------------
-      // 同时将日志输出到文件
-      if (outputDir !== undefined) {
-        writeLogToFile(outputInfos, formatOptions);
-      }
-
-      // 退出进程
-      process.exit();
-    }
-  }, duration);
-}
-
-function run(formatOptions) {
+async function run(formatOptions) {
+  // console.log("formatOptions", formatOptions);
   const { checkDirs } = formatOptions;
+  // console.log("Start scanning...");
 
   // 指定要遍历的目录
   checkDirs.forEach((checkDir) => {
     checkDirectory(joinDirectoryPath(checkDir), formatOptions);
+    // console.log("taskList", taskList.length, taskList);
+    console.log("Scanning... " + taskList.length + " files found");
   });
+  // console.log("fileList", fileList.length, fileList);
 
-  // 定时检查是否遍历完成
-  const duration = 50;
-  regularCheck(duration, formatOptions);
+  // 并行执行所有任务
+  await Promise.all(taskList)
+    .then((results) => {
+      // console.log("Results: ", results);
+      // 过滤掉 null 值
+      const validResults = results.filter((item) => item !== null);
+      // console.log("Valid results: ", validResults);
+      outputInfos.push(...validResults);
+    })
+    .catch((err) => {
+      console.error("Error: ", err);
+    });
+  // console.log("outputInfos", outputInfos.length, outputInfos);
+
+  console.log("Scan completed");
+  handleOutputInfos(outputInfos, formatOptions);
+
+  // 退出进程
+  process.exit();
 }
 
-function locc(options) {
+async function locc(options) {
   const formatOptions = {
     maxLines: options.lines,
     checkDirs: options.directory.split(","),
@@ -163,7 +167,7 @@ function locc(options) {
     excludeDirs: options.exclude.split(","),
   };
 
-  run(formatOptions);
+  await run(formatOptions);
 }
 
 module.exports = { locc };
