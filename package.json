@@ -26,12 +26,10 @@
   },
   "scripts": {
     "build": "vite build",
+    "prepublishOnly": "npm run build",
     "test": "jest"
   },
-  "files": [
-    "index.js",
-    "README-zh-CN.md"
-  ],
+  "files": [],
   "dependencies": {
     "commander": "^12.1.0"
   },
