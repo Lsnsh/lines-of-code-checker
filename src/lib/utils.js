@@ -11,11 +11,11 @@ function matchExcludeDirectory(directoryPath, excludeDirs) {
     return false;
   }
 
-  const excludeDirectoryPaths = excludeDirs.map((dir) =>
-    joinDirectoryPath(dir)
+  const excluded = excludeDirs.some((dir) =>
+    directoryPath.split(path.posix.sep).includes(dir)
   );
 
-  return excludeDirectoryPaths.includes(directoryPath);
+  return excluded;
 }
 
 export { joinDirectoryPath, matchExcludeDirectory };
