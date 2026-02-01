@@ -1,15 +1,16 @@
-import { resolve } from "path";
+import { resolve } from "node:path";
 import { defineConfig } from "vite";
 
 export default defineConfig({
   build: {
     lib: {
-      entry: resolve(__dirname, "src/index.js"),
+      entry: resolve(__dirname, "bin/cli.js"),
       formats: ["cjs"],
-      fileName: "index",
+      fileName: "cli",
     },
-    target: "node18",
+    rollupOptions: {
+      external: ["node:fs", "node:path", "commander"],
+    },
     outDir: "dist",
-    sourcemap: true,
   },
 });

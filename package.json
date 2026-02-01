@@ -22,7 +22,7 @@
     "url": "git+https://github.com/Lsnsh/lines-of-code-checker.git"
   },
   "bin": {
-    "locc": "dist/index.js"
+    "locc": "dist/cli.js"
   },
   "scripts": {
     "build": "vite build",
