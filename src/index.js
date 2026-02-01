@@ -132,9 +132,17 @@ async function run(formatOptions) {
 
   // 指定要遍历的目录
   checkDirs.forEach((checkDir) => {
-    checkDirectory(joinDirectoryPath(checkDir), formatOptions);
+    const firstChar = checkDir.slice(0, 1);
+    const checkDirPath = ["/", "~"].includes(firstChar)
+      ? checkDir
+      : joinDirectoryPath(checkDir);
+    checkDirectory(checkDirPath, formatOptions);
     // console.log("taskList", taskList.length, taskList);
-    console.log("Scanning... " + taskList.length + " files found");
+    console.log(
+      "Path:",
+      checkDirPath,
+      "Scanning..., found " + taskList.length + " file"
+    );
   });
   // console.log("fileList", fileList.length, fileList);
 
