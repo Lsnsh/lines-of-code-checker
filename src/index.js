@@ -1,6 +1,6 @@
-const fs = require("fs");
-const path = require("path");
-const { joinDirectoryPath, matchExcludeDirectory } = require("./lib/utils");
+import fs from "node:fs";
+import path from "node:path";
+import { joinDirectoryPath, matchExcludeDirectory } from "./lib/utils";
 
 const fileList = [];
 const taskList = [];
@@ -170,4 +170,4 @@ async function locc(options) {
   await run(formatOptions);
 }
 
-module.exports = { locc };
+export { locc };

@@ -1,8 +1,10 @@
 #!/usr/bin/env node
 
-const { program } = require("commander");
-const pkg = require("../package.json");
-const { locc } = require("../src/index.js");
+import { Command } from "commander";
+import pkg from "../package.json";
+import { locc } from "../src/index.js";
+
+const program = new Command();
 
 program
   .version(pkg.version)

@@ -1,4 +1,4 @@
-const path = require("path");
+import path from "node:path";
 
 // 拼接目录路径
 function joinDirectoryPath(subPath) {
@@ -18,7 +18,4 @@ function matchExcludeDirectory(directoryPath, excludeDirs) {
   return excludeDirectoryPaths.includes(directoryPath);
 }
 
-module.exports = {
-  joinDirectoryPath,
-  matchExcludeDirectory,
-};
+export { joinDirectoryPath, matchExcludeDirectory };
